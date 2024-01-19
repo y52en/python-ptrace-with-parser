@@ -41,7 +41,7 @@ def main():
     syscall_exit = parser.parse(
         {
             "x8": 93,  # exit
-            "x0": 0,
+            "x0": 0, # exit code
             "x1": 0,
             "x2": 0,
             "x3": 0,
@@ -50,7 +50,7 @@ def main():
             "x6": 0,
             "x7": 0,
         },
-        0,  # exit code
+        0,
     )
     assert syscall_exit == "long exit(int error_code=0)              = 0"
 
