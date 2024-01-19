@@ -66,7 +66,7 @@ def main():
             "x6": 0,
             "x7": 0,
         },
-        1,  # exit code
+        1,  # fd
     )
     assert syscall_openat == "long openat(int error_code=0, int dirfd=0, const char * filename=bytearray(b'/proc/self/map'), int flags=O_RDONLY, umode_t mode=) = 1"
 
