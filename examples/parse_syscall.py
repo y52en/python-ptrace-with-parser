@@ -1,5 +1,5 @@
-from ptrace.func_call import FunctionCallOptions
-from ptrace.syscall.ptrace_syscall import SyscallParser, Arch
+from ptrace_with_parser.func_call import FunctionCallOptions
+from ptrace_with_parser.syscall.ptrace_syscall import SyscallParser, Arch
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
         },
         0,  # exit code
     )
-    assert syscall_exit == "long exit(int error_code=0)"
+    assert syscall_exit == "long exit(int error_code=0)              = 0"
 
     syscall_openat = parser.parse(
         {
@@ -48,7 +48,7 @@ def main():
         },
         1,  # exit code
     )
-    assert syscall_openat == "long openat(int error_code=0, int dirfd=0, const char * filename=bytearray(b'/proc/self/map'), int flags=O_RDONLY, umode_t mode=) = 0"
+    assert syscall_openat == "long openat(int error_code=0, int dirfd=0, const char * filename=bytearray(b'/proc/self/map'), int flags=O_RDONLY, umode_t mode=) = 1"
 
 
 if __name__ == "__main__":
