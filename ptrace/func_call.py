@@ -1,15 +1,22 @@
-from ptrace.func_arg import FunctionArgument
+from __future__ import annotations
+from typing import Any, Callable, TypeVar
 
+T = TypeVar("T")
 
 class FunctionCallOptions(object):
     """
     Options to format a function call and its arguments.
     """
 
-    def __init__(self,
-                 write_types=False, write_argname=False,
-                 replace_socketcall=True, string_max_length=300,
-                 write_address=False, max_array_count=20):
+    def __init__(
+        self,
+        write_types=False,
+        write_argname=False,
+        replace_socketcall=True,
+        string_max_length=300,
+        write_address=False,
+        max_array_count=20,
+    ):
         self.write_address = write_address
         self.write_types = write_types
         self.write_argname = write_argname
@@ -34,23 +41,34 @@ class FunctionCall(object):
      - clearArguments(): remove all arguments
     """
 
-    def __init__(self, name, options, argument_class=FunctionArgument):
+    name: str
+    options: FunctionCallOptions
+    arguments: list[T]
+    restype: str | None
+    resvalue: Any
+
+    def __init__(
+        self, name: str, options: FunctionCallOptions, argument_class=T,
+        mem_read: Callable[[int, int], bytes] | None = None
+    ):
         self.name = name
         self.options = options
         self.arguments = []
         self.restype = None
         self.resvalue = None
         self.argument_class = argument_class
+        self.mem_read = mem_read
 
-    def addArgument(self, value=None, name=None, type=None):
+    def addArgument(self, value=None, name=None, type:str|None=None):
         arg = self.argument_class(
-            self, len(self.arguments), self.options, value, type, name)
+            self, len(self.arguments), self.options, value, type, name, self.mem_read
+        )
         self.arguments.append(arg)
 
     def clearArguments(self):
         self.arguments = []
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str | int) -> T:
         if isinstance(key, str):
             for arg in self.arguments:
                 if arg.name == key:
@@ -60,7 +78,7 @@ class FunctionCall(object):
             # Integer key
             return self.arguments[key]
 
-    def format(self):
+    def format(self) -> str:
         arguments = [arg.format() for arg in self.arguments]
 
         # Remove empty optionnal arguments
@@ -73,5 +91,5 @@ class FunctionCall(object):
         else:
             return "%s(%s)" % (self.name, arguments)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<FunctionCall name=%r>" % self.name

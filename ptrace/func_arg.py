@@ -1,3 +1,4 @@
+from typing import Callable
 from ptrace.error import PTRACE_ERRORS, writeError
 from logging import getLogger
 from ptrace.ctypes_tools import formatAddress
@@ -17,8 +18,7 @@ class FunctionArgument(object):
     argument instead.
     """
 
-    def __init__(self, function, index, options,
-                 value=None, type=None, name=None):
+    def __init__(self, function, index, options, value=None, type=None, name=None,mem_read: Callable[[int, int], bytes] | None = None):
         self.function = function
         self.index = index
         self.options = options
@@ -26,6 +26,7 @@ class FunctionArgument(object):
         self.type = type
         self.name = name
         self.text = None
+        self.mem_read = mem_read
 
     def getText(self):
         if not self.text:
@@ -38,13 +39,16 @@ class FunctionArgument(object):
                 else:
                     self.text = repr(self.value)
             except PTRACE_ERRORS as err:
-                writeError(getLogger(), err,
-                           "Format argument %s of function %s() value error"
-                           % (self.name, self.function.name))
+                writeError(
+                    getLogger(),
+                    err,
+                    "Format argument %s of function %s() value error"
+                    % (self.name, self.function.name),
+                )
                 self.text = repr(self.value)
         return self.text
 
-    def format(self):
+    def format(self) -> str:
         text = self.getText()
         options = self.options
         if options.write_argname and self.name:
@@ -70,6 +74,8 @@ class FunctionArgument(object):
         address = self.value
 
         struct_name = struct.__name__
+        if self.mem_read is not None:
+            raise NotImplementedError("TODO: FIX")
         data = self.function.process.readStruct(address, struct)
         arguments = []
         for name, argtype in struct._fields_:
@@ -92,6 +98,8 @@ class FunctionArgument(object):
         return None
 
     def readArray(self, address, basetype, count):
+        if self.mem_read is not None:
+            raise NotImplementedError("TODO: FIX")
         array = self.function.process.readArray(address, basetype, count)
         arguments = []
         for index in range(count):

@@ -1,3 +1,4 @@
+from typing import Callable
 from ptrace.cpu_info import CPU_WORD_SIZE
 from ptrace.ctypes_tools import uint2int, formatWordHex, formatAddress
 from ptrace.signames import signalName
@@ -72,7 +73,7 @@ def iterBits(data):
 
 class SyscallArgument(FunctionArgument):
 
-    def createText(self):
+    def createText(self, mem_read: Callable[[int, int], bytes] | None = None) -> str:
         value = self.value
         argtype = self.type
         name = self.name
@@ -191,17 +192,38 @@ class SyscallArgument(FunctionArgument):
         return None
 
     def readBits(self, address, count, format=str):
-        bytes = self.function.process.readBytes(address, count // 8)
+        if self.mem_read is None:
+            bytes = self.function.process.readBytes(address, count // 8)
+        else:
+            bytes = self.mem_read(address, count // 8)
         fd_set = [format(index)
                   for index, bit in enumerate(iterBits(bytes)) if bit]
         return fd_set
 
-    def readCString(self, address):
+    def readCString(self, address, mem_read: Callable[[int, int], bytes] | None = None):
         if address:
             max_size = self.options.string_max_length
-            data, truncated = self.function.process.readCString(
-                address, max_size)
-            text = os.fsdecode(data)
+            if self.mem_read is None:
+                data, truncated = self.function.process.readCString(
+                    address, max_size)
+                text = os.fsdecode(data)
+            else:
+                data = bytearray()
+                truncated = False
+                address_i = address
+                while True:
+                    byte = self.mem_read(address_i, 1)
+                    if not byte:
+                        break
+                    if byte == b"\x00":
+                        break
+                    data += byte
+                    if len(data) >= max_size:
+                        truncated = True
+                        break
+                    address_i += 1
+                text = data
+
             text = repr(text)
             if truncated:
                 text += "..."
@@ -214,7 +236,10 @@ class SyscallArgument(FunctionArgument):
             max_len = self.options.string_max_length
             truncated = (max_len < size)
             size = min(size, max_len)
-            data = self.function.process.readBytes(address, size)
+            if self.read_fn is None:
+                data = self.function.process.readBytes(address, size)
+            else:
+                data = self.read_fn(address, size)
             text = os.fsdecode(data)
             text = repr(text)
             if truncated:
@@ -229,6 +254,8 @@ class SyscallArgument(FunctionArgument):
         address0 = address
         max_count = self.options.max_array_count
         text = []
+        if self.mem_read is not None:
+            raise NotImplementedError("TODO: FIX")
         while True:
             str_addr = self.function.process.readWord(address)
             address += CPU_WORD_SIZE
