@@ -48,7 +48,7 @@ def main():
         },
         1,  # fd
     )
-    assert syscall_openat == "long openat(int error_code=0, int dirfd=0, const char * filename=bytearray(b'/proc/self/map'), int flags=O_RDONLY, umode_t mode=) = 1"
+    assert syscall_openat == "long openat(int dirfd=0, const char * filename=bytearray(b'/proc/self/map'), int flags=O_RDONLY, umode_t mode=) = 1"
 
 
 if __name__ == "__main__":
