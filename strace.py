@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-from ptrace import PtraceError
-from ptrace.debugger import (PtraceDebugger, Application,
+from ptrace_with_parser import PtraceError
+from ptrace_with_parser.debugger import (PtraceDebugger, Application,
                              ProcessExit, ProcessSignal, NewProcessEvent, ProcessExecution)
-from ptrace.syscall import (SYSCALL_NAMES, SYSCALL_PROTOTYPES,
+from ptrace_with_parser.syscall import (SYSCALL_NAMES, SYSCALL_PROTOTYPES,
                             FILENAME_ARGUMENTS, SOCKET_SYSCALL_NAMES)
-from ptrace.func_call import FunctionCallOptions
+from ptrace_with_parser.func_call import FunctionCallOptions
 from sys import stderr, exit
 from optparse import OptionParser
 from logging import getLogger, error
-from ptrace.error import PTRACE_ERRORS, writeError
-from ptrace.ctypes_tools import formatAddress
-from ptrace.tools import signal_to_exitcode
+from ptrace_with_parser.error import PTRACE_ERRORS, writeError
+from ptrace_with_parser.ctypes_tools import formatAddress
+from ptrace_with_parser.tools import signal_to_exitcode
 import sys
 import re
 
@@ -244,7 +244,7 @@ class SyscallTracer(Application):
 
     def main(self):
         if self.options.profiler:
-            from ptrace.profiler import runProfiler
+            from ptrace_with_parser.profiler import runProfiler
             exitcode = runProfiler(getLogger(), self._main)
         else:
             exitcode = self._main()

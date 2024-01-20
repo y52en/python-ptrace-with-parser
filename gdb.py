@@ -1,29 +1,29 @@
 #!/usr/bin/env python
-from ptrace import PtraceError
-from ptrace.debugger import (PtraceDebugger, Application,
+from ptrace_with_parser import PtraceError
+from ptrace_with_parser.debugger import (PtraceDebugger, Application,
                              ProcessExit, NewProcessEvent, ProcessSignal,
                              ProcessExecution, ProcessError)
 from optparse import OptionParser
 from os import getpid
 from sys import stdout, stderr, exit
 from logging import getLogger, info, warning, error
-from ptrace.version import __version__ as VERSION, WEBSITE
-from ptrace.error import PTRACE_ERRORS, writeError
-from ptrace.binding import HAS_PTRACE_SINGLESTEP
-from ptrace.disasm import HAS_DISASSEMBLER
-from ptrace.ctypes_tools import (truncateWord,
+from ptrace_with_parser.version import __version__ as VERSION, WEBSITE
+from ptrace_with_parser.error import PTRACE_ERRORS, writeError
+from ptrace_with_parser.binding import HAS_PTRACE_SINGLESTEP
+from ptrace_with_parser.disasm import HAS_DISASSEMBLER
+from ptrace_with_parser.ctypes_tools import (truncateWord,
                                  formatWordHex, formatAddress, formatAddressRange, word2bytes)
-from ptrace.process_tools import dumpProcessInfo
-from ptrace.tools import inverseDict
-from ptrace.func_call import FunctionCallOptions
-from ptrace.signames import signalName, SIGNAMES
+from ptrace_with_parser.process_tools import dumpProcessInfo
+from ptrace_with_parser.tools import inverseDict
+from ptrace_with_parser.func_call import FunctionCallOptions
+from ptrace_with_parser.signames import signalName, SIGNAMES
 from signal import SIGTRAP, SIGINT
-from ptrace.terminal import enableEchoMode, terminalWidth
+from ptrace_with_parser.terminal import enableEchoMode, terminalWidth
 from errno import ESRCH
-from ptrace.cpu_info import CPU_POWERPC
-from ptrace.debugger import ChildError
-from ptrace.debugger.memory_mapping import readProcessMappings
-from ptrace.os_tools import RUNNING_PYTHON3
+from ptrace_with_parser.cpu_info import CPU_POWERPC
+from ptrace_with_parser.debugger import ChildError
+from ptrace_with_parser.debugger.memory_mapping import readProcessMappings
+from ptrace_with_parser.os_tools import RUNNING_PYTHON3
 try:
     unichr
     raw_input

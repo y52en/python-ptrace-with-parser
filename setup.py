@@ -3,7 +3,7 @@
 # Prepare a release:
 #
 #  - git pull --rebase  # check that there is no incoming changesets
-#  - check version in ptrace/version.py and doc/conf.py
+#  - check version in ptrace_with_parser/version.py and doc/conf.py
 #  - set release date in doc/changelog.rst
 #  - check that "python3 setup.py sdist" contains all files tracked by
 #    the SCM (Git): update MANIFEST.in if needed
@@ -24,7 +24,7 @@
 #
 # After the release:
 #
-#  - increment version in  ptrace/version.py and doc/conf.py
+#  - increment version in  ptrace_with_parser/version.py and doc/conf.py
 #  - git commit -a -m "post-release"
 #  - git push
 
@@ -37,7 +37,7 @@ except ImportError:
     from distutils.core import setup
 
 
-MODULES = ["ptrace", "ptrace.binding", "ptrace.syscall", "ptrace.syscall.linux", "ptrace.debugger"]
+MODULES = ["ptrace_with_parser", "ptrace_with_parser.binding", "ptrace_with_parser.syscall", "ptrace_with_parser.syscall.linux", "ptrace_with_parser.debugger"]
 
 SCRIPTS = ("strace.py", "gdb.py")
 
@@ -55,24 +55,24 @@ CLASSIFIERS = [
 with open('README.md') as fp:
     LONG_DESCRIPTION = fp.read()
 
-ptrace_spec = importlib.util.spec_from_file_location("version", path.join("ptrace", "version.py"))
-ptrace = importlib.util.module_from_spec(ptrace_spec)
-ptrace_spec.loader.exec_module(ptrace)
+ptrace_with_parser_spec = importlib.util.spec_from_file_location("version", path.join("ptrace_with_parser", "version.py"))
+ptrace_with_parser = importlib.util.module_from_spec(ptrace_with_parser_spec)
+ptrace_with_parser_spec.loader.exec_module(ptrace_with_parser)
 
 PACKAGES = {}
 for name in MODULES:
     PACKAGES[name] = name.replace(".", "/")
 
 install_options = {
-    "name": ptrace.PACKAGE,
-    "version": ptrace.__version__,
-    "url": ptrace.WEBSITE,
-    "download_url": ptrace.WEBSITE,
+    "name": ptrace_with_parser.PACKAGE,
+    "version": ptrace_with_parser.__version__,
+    "url": ptrace_with_parser.WEBSITE,
+    "download_url": ptrace_with_parser.WEBSITE,
     "author": "Victor Stinner",
-    "description": "python binding of ptrace",
+    "description": "python binding of ptrace_with_parser",
     "long_description": LONG_DESCRIPTION,
     "classifiers": CLASSIFIERS,
-    "license": ptrace.LICENSE,
+    "license": ptrace_with_parser.LICENSE,
     "packages": list(PACKAGES.keys()),
     "package_dir": PACKAGES,
     "scripts": SCRIPTS,

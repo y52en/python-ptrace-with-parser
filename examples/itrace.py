@@ -15,7 +15,7 @@ Mark
 """
 
 import signal
-from ptrace.debugger import ProcessExit, ProcessSignal
+from ptrace_with_parser.debugger import ProcessExit, ProcessSignal
 import strace
 
 class Tracer(strace.SyscallTracer):

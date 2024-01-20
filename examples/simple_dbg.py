@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-from ptrace.debugger.debugger import PtraceDebugger
-from ptrace.debugger.child import createChild
-from ptrace.tools import locateProgram
+from ptrace_with_parser.debugger.debugger import PtraceDebugger
+from ptrace_with_parser.debugger.child import createChild
+from ptrace_with_parser.tools import locateProgram
 from sys import stderr, argv, exit
 
 def playWithProcess(process):
