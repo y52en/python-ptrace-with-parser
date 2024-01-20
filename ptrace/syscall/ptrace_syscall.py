@@ -337,7 +337,10 @@ class SyscallParser(FunctionCall):
             else:
                 text = str(self.result)
         self.result_text = text
-        return "%-40s = %s" % (self.format(), self.result_text)
+        self.parsed_text = "%-40s = %s" % (self.format(), self.result_text)
+        self.before_args = self.arguments
+        self.arguments = []
+        return self.parsed_text
 
     def _enter(self, regs: dict[str, int]):
         argument_values = self._readArgumentValues(regs)

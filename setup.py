@@ -52,7 +52,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3',
 ]
 
-with open('README.rst') as fp:
+with open('README.md') as fp:
     LONG_DESCRIPTION = fp.read()
 
 ptrace_spec = importlib.util.spec_from_file_location("version", path.join("ptrace", "version.py"))
